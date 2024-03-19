@@ -8,9 +8,12 @@ height_map = [
     [0, 0, 0, 0, 0]
 ]
 vertices = []
+print(enumerate(height_map))
 for row, y in enumerate(height_map):
+    print(row)
+    print(y)
     for col, z in enumerate(y):
-        vertices.append([row, col, z+100])
+        vertices.append([row, col, z*5])
 
 faces = []
 for row in range(len(height_map) - 1):
@@ -26,6 +29,6 @@ mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
 
 mesh.export('model.stl')
 
-mesh = trimesh.Trimesh(vertices=[[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 2, 0]],
+mesh = trimesh.Trimesh(vertices=[[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1]],
                        faces=[[0, 1, 2], [1, 2, 3]])
 mesh.export('model2.stl')
