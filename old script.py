@@ -28,5 +28,4 @@ for row in range(len(height_map) - 1):
         faces.append([v2, v3, v4])
 
 mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-mesh.show
 mesh.export('model.stl')
