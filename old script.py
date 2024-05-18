@@ -1,12 +1,12 @@
 import trimesh
-import numpy as np
 trimesh.util.attach_to_log()
+
 height_map = [
     [0, 3, 0, 2, 0],
     [0, 1, 2, 1, 0],
     [0, 2, 3, 2, 0],
     [0, 1, 2, 1, 0],
-    [1, 1, 1, 1, 1]
+    [0, 0, 0, 0, 0]
 ]
 print(len(height_map))
 vertices = []
@@ -28,24 +28,5 @@ for row in range(len(height_map) - 1):
         faces.append([v2, v3, v4])
 
 mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-
+mesh.show
 mesh.export('model.stl')
-
-vertices = []
-faces = []
-
-for x in range(len(height_map)):
-    for y in range(len(height_map[x])):
-        vertices.append([x, y, height_map[x][y]])
-
-counter = 0
-for x in range(len(height_map)-1):
-    for y in range(len(height_map[x])-1):
-        faces.append([counter, counter+1, counter+len(height_map[x])+1])
-        faces.append([counter, counter+len(height_map[x]), counter+len(height_map[x])+1])
-        counter += 1
-# faces.append([0, len(height_map)-1, counter-len())
-# faces.append([0, len(height_map)-1, counter]-1)
-
-mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-mesh.export('model2.stl')        
