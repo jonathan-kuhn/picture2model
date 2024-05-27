@@ -1,3 +1,7 @@
 venv/
 model*
 .editorconfig
+*.jpg
+*.jpeg
+Alte Bilder/
+.png
