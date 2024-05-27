@@ -1,60 +1,78 @@
+from PIL import Image
+import numpy as np
+from time import sleep, perf_counter
+#image = Image.open("Green-Wallpaper-36-640x360.jpg")  # the image to use
+starttime = perf_counter()
+
+filename = "Hannah(2).jpeg"
+image = Image.open(filename)
+greyscale = Image.open(filename).convert('L')
+img_width = image.size[0]  # the width and height of the input image
+img_height = image.size[1]
+height_map = [[0] * (img_height + 2)]  # Initialize the first row with 0s
+print()
+
+for pix_x in range(img_width):
+    row = [0]  # Start with a 0 for the left edge
+    for pix_y in range(img_height):
+            luminance = 0.21 * image.getpixel((pix_x, pix_y))[0] + 0.72 * image.getpixel((pix_x, pix_y))[1] + 0.07 * image.getpixel((pix_x, pix_y))[2]
+            brightness = greyscale.getpixel((pix_x, pix_y))
+            if brightness>100:
+                 row.append(2)
+            elif brightness>3:
+                 row.append(3)
+            else:
+                 row.append(4)
+    row.append(0)  # Add 0 for the right edge
+    height_map.append(row)
+
+height_map.append([0] * (img_height + 2))  # Add the last row with 0s
+
+
+
+
 
 import trimesh
-import numpy as np
+
 trimesh.util.attach_to_log()
-height_map = []
 print(len(height_map))
 
 base_thickness = 1
 
-vertices = []
+vertecies = []
 faces = []
 
 for x in range(len(height_map)):
+    print(f'Progress with adding vertecies: {x*100//len(height_map)}%')
     for y in range(len(height_map[x])):
-        vertices.append([x, y, height_map[x][y]])
+        vertecies.append([x, y, height_map[x][y]])
 
 # base_width = len(height_map[0])   #define the size of the base
 # base_length = len(height_map)
-# vertices.append([0,0 -base_thickness])   #add four vertices for the base
-# vertices.append([0,len(height_map[0])-1,-base_thickness])
-# vertices.append([len(height_map)-1,0,-base_thickness])
-# vertices.append([len(height_map)-1,len(height_map[0])-1,-base_thickness])
+# vertecies.append([0,0 -base_thickness])   #add four vertecies for the base
+# vertecies.append([0,len(height_map[0])-1,-base_thickness])
+# vertecies.append([len(height_map)-1,0,-base_thickness])
+# vertecies.append([len(height_map)-1,len(height_map[0])-1,-base_thickness])
 
-print(vertices)
-
-counter = 0
-for a in range(len(height_map)-1):
-    print(a)
+def add_Faces(a):
     for b in range(len(height_map[a])-1):
-        counter = vertices.index([a, b, height_map[a][b]])
+        counter = vertecies.index([a, b, height_map[a][b]])
         faces.append([counter, counter+1, counter+len(height_map[a])+1])
         faces.append([counter, counter+len(height_map[a]), counter+len(height_map[x])+1])
-faces.append([0, len(height_map[a])-1, len(vertices)-1])
-faces.append([0, len(vertices)-(len(height_map[a])), len(vertices)-1])
-
-# Add faces for the base
-# faces.append([(len(vertices)-1),(len(vertices)-2),(len(vertices)-4)])
-# faces.append([(len(vertices)-1),(len(vertices)-3),(len(vertices)-4)])
+        
+for a in range(len(height_map)-1):
+    print(f'Progress with adding faces: {a*100//(len(height_map)-1)}%')
+    add_Faces(a)
 
 
-#add faces connecting the base vertices with the vertices of the model
-print(vertices)
-# for i in range(len(vertices)-1, len(vertices)-5, -1):
-#     if i%2 == 0:
-#         i_and_height = vertices.index([vertices[i][0], vertices[i][1], vertices[i][2]+base_thickness])
-#         i_and_height_and_y = vertices.index([vertices[i][0], vertices[i][1]+len(height_map), vertices[i][2]+base_thickness])
-#         i_and_y = vertices.index([vertices[i][0],vertices[i][1]+len(height_map),vertices[i][2]])
-#         faces.append([i, i_and_height, i_and_height_and_y])
-#         faces.append([i, i_and_y, i_and_height_and_y])
-#     else:
-#         print(f'vertices[i] is {vertices[i]}')
-#         i_and_height = vertices.index([vertices[i][0], vertices[i][1], vertices[i][2]+base_thickness])
-#         i_and_height_and_x = vertices.index([vertices[i][0]+len(height_map[0]), vertices[i][1], vertices[i][2]+base_thickness])
-#         i_and_x = vertices.index([vertices[i][0]+len(height_map[0]), vertices[i][1], vertices[i][2]])
-#         faces.append([i, i_and_height, i_and_height_and_x])
-#         faces.append([i, i_and_x, i_and_height_and_x])
+faces.append([0, len(height_map[a])-1, len(vertecies)-1])
+faces.append([0, len(vertecies)-(len(height_map[a])), len(vertecies)-1])
 
 
-mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-mesh.export('model2.stl')
+
+mesh = trimesh.Trimesh(vertecies, faces)
+mesh.export('final.stl')
+
+
+endtime = perf_counter()
+print(f'hat {endtime-starttime} gedauert')
